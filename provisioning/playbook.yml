@@ -1,0 +1,63 @@
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+  - name: install necessary base packages
+    yum: pkg={{ item }} update_cache=true
+
+    with_items:
+      - mc
+      - git
+      - redhat-lsb-core
+      #build tools
+      - yum-utils
+      - rpmdevtools
+      - gcc
+      - make
+      - automake
+      #nginx dependencies
+      - openssl-devel
+      - zlib-devel
+      - pcre-devel
+      - GeoIP-devel
+
+  - name: Download nginx.rpm
+    get_url:
+      url: http://nginx.org/packages/centos/7/SRPMS/nginx-1.14.0-1.el7_4.ngx.src.rpm
+      dest: /tmp/nginx.rpm
+      mode: 0440
+
+    #Ansible Yum module fails with "Not a compatible architecture"
+  - name: rpm -i /tmp/nginx.rpm
+    shell: rpm -i /tmp/nginx.rpm
+    args:
+        creates: /root/rpmbuild
+
+  - name: Copy custom nginx.spec
+    copy:
+      src: nginx.spec
+      dest: /root/rpmbuild/SPECS/nginx.spec
+      owner: root
+      group: root
+      mode: 644
+
+  - name: Copy build script
+    copy:
+      src: build_nginx.sh
+      dest: /root/build_nginx.sh
+      owner: root
+      group: root
+      mode: 755
+
+  - name: Execute build script /root/build_nginx.sh
+    shell: /root/build_nginx.sh
+    args:
+
+  - name: Create /vagrant/output directory
+    file:
+      path: /vagrant/output
+      state: directory
+      mode: 0755
+
+  - name: Copy builded rpms outside VM
+    shell: cp /root/rpmbuild/RPMS/x86_64/*.rpm /vagrant/output/
