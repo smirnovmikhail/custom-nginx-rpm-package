@@ -48,6 +48,7 @@ BuildRequires: systemd
 # end of distribution specific definitions
 
 %define main_version 1.14.0
+
 %define main_release 1%{?dist}.centos.ngx
 
 %define bdir %{_builddir}/%{name}-%{main_version}
@@ -97,6 +98,7 @@ a mail proxy server.
 
 %prep
 %setup -q
+
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
@@ -110,6 +112,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
     --with-http_geoip_module=dynamic \
     --add-dynamic-module=/root/rpmbuild/SOURCES/headers-more-nginx-module \
     --add-dynamic-module=/root/rpmbuild/SOURCES/ngx_http_substitutions_filter_module \
+
     --add-dynamic-module=/root/rpmbuild/SOURCES/nginx-module-vts \
     --add-dynamic-module=/root/rpmbuild/SOURCES/nginx_accept_language_module \
     --add-dynamic-module=/root/rpmbuild/SOURCES/nginx_upstream_check_module \
@@ -237,6 +240,7 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 
 %attr(0755,root,root) %dir %{_libdir}/nginx
 %attr(0755,root,root) %dir %{_libdir}/nginx/modules
+
 %dir %{_datadir}/nginx
 %dir %{_datadir}/nginx/html
 %{_datadir}/nginx/html/*
@@ -326,6 +330,7 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+
 * Tue Apr 17 2018 Konstantin Pavlov <thresh@nginx.com>
 - 1.14.0
 
@@ -368,6 +373,16 @@ fi
 
 * Tue Apr 25 2017 Konstantin Pavlov <thresh@nginx.com>
 - 1.13.0
+
+* Tue Oct 17 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.12.2
+
+* Tue Jul 11 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.12.1
+- Fixes CVE-2017-7529
+
+* Wed Apr 12 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.12.0
 
 * Tue Apr  4 2017 Konstantin Pavlov <thresh@nginx.com>
 - 1.11.13

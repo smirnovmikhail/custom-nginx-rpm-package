@@ -51,7 +51,6 @@
 
   - name: Execute build script /root/build_nginx.sh
     shell: /root/build_nginx.sh
-    args:
 
   - name: Create /vagrant/output directory
     file:

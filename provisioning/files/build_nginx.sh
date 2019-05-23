@@ -27,7 +27,8 @@ pushd ~/rpmbuild/SOURCES
 #    git checkout master
 #    popd
 
-    #Accept Language Modul
+
+    #Accept Language Module
     git clone https://github.com/giom/nginx_accept_language_module.git
     pushd nginx_accept_language_module
     git checkout master
@@ -38,7 +39,6 @@ pushd ~/rpmbuild/SOURCES
     pushd nginx_upstream_check_module
     git checkout v0.3.0
     popd
-
 
 #
 #    #Fancy Index module
