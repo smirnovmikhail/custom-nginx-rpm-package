@@ -23,7 +23,7 @@
 
   - name: Download nginx.rpm
     get_url:
-      url: http://nginx.org/packages/centos/7/SRPMS/nginx-1.12.2-1.el7_4.ngx.src.rpm
+      url: http://nginx.org/packages/centos/7/SRPMS/nginx-1.14.0-1.el7_4.ngx.src.rpm
       dest: /tmp/nginx.rpm
       mode: 0440
 

@@ -47,7 +47,8 @@ BuildRequires: systemd
 
 # end of distribution specific definitions
 
-%define main_version 1.12.2
+%define main_version 1.14.0
+
 %define main_release 1%{?dist}.centos.ngx
 
 %define bdir %{_builddir}/%{name}-%{main_version}
@@ -56,8 +57,6 @@ BuildRequires: systemd
 %define WITH_LD_OPT -Wl,-z,relro -Wl,-z,now -pie
 
 %define BASE_CONFIGURE_ARGS $(echo "--prefix=%{_sysconfdir}/nginx --sbin-path=%{_sbindir}/nginx --modules-path=%{_libdir}/nginx/modules --conf-path=%{_sysconfdir}/nginx/nginx.conf --error-log-path=%{_localstatedir}/log/nginx/error.log --http-log-path=%{_localstatedir}/log/nginx/access.log --pid-path=%{_localstatedir}/run/nginx.pid --lock-path=%{_localstatedir}/run/nginx.lock --http-client-body-temp-path=%{_localstatedir}/cache/nginx/client_temp --http-proxy-temp-path=%{_localstatedir}/cache/nginx/proxy_temp --http-fastcgi-temp-path=%{_localstatedir}/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=%{_localstatedir}/cache/nginx/uwsgi_temp --http-scgi-temp-path=%{_localstatedir}/cache/nginx/scgi_temp --user=%{nginx_user} --group=%{nginx_group} --with-compat --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module")
-
-#%define headers_more_nginx_module_commit 55fbdaba96be3d4e534201232f6b555f3415fbb9
 
 Summary: High performance web server
 Name: nginx
@@ -81,9 +80,6 @@ Source11: nginx-debug.service
 Source12: COPYRIGHT
 Source13: nginx.check-reload.sh
 
-#Source101: https://github.com/openresty/headers-more-nginx-module/archive/%{headers_more_nginx_module_commit}.tar.gz
-#/headers-more-nginx-module.tar.gz
-
 License: 2-clause BSD-like license
 
 BuildRoot: %{_tmppath}/%{name}-%{main_version}-%{main_release}-root
@@ -102,7 +98,7 @@ a mail proxy server.
 
 %prep
 %setup -q
-#%setup -T -D -a 101
+
 cp %{SOURCE2} .
 sed -e 's|%%DEFAULTSTART%%|2 3 4 5|g' -e 's|%%DEFAULTSTOP%%|0 1 6|g' \
     -e 's|%%PROVIDES%%|nginx|g' < %{SOURCE2} > nginx.init
@@ -116,7 +112,7 @@ sed -e 's|%%DEFAULTSTART%%||g' -e 's|%%DEFAULTSTOP%%|0 1 2 3 4 5 6|g' \
     --with-http_geoip_module=dynamic \
     --add-dynamic-module=/root/rpmbuild/SOURCES/headers-more-nginx-module \
     --add-dynamic-module=/root/rpmbuild/SOURCES/ngx_http_substitutions_filter_module \
-    --add-dynamic-module=/root/rpmbuild/SOURCES/ngx_http_pinba_module \
+
     --add-dynamic-module=/root/rpmbuild/SOURCES/nginx-module-vts \
     --add-dynamic-module=/root/rpmbuild/SOURCES/nginx_accept_language_module \
     --add-dynamic-module=/root/rpmbuild/SOURCES/nginx_upstream_check_module \
@@ -130,7 +126,6 @@ make %{?_smp_mflags}
     --with-http_geoip_module=dynamic \
     --add-dynamic-module=/root/rpmbuild/SOURCES/headers-more-nginx-module \
     --add-dynamic-module=/root/rpmbuild/SOURCES/ngx_http_substitutions_filter_module \
-    --add-dynamic-module=/root/rpmbuild/SOURCES/ngx_http_pinba_module \
     --add-dynamic-module=/root/rpmbuild/SOURCES/nginx-module-vts \
     --add-dynamic-module=/root/rpmbuild/SOURCES/nginx_accept_language_module \
     --add-dynamic-module=/root/rpmbuild/SOURCES/nginx_upstream_check_module
@@ -254,7 +249,6 @@ cd $RPM_BUILD_ROOT%{_sysconfdir}/nginx && \
 %attr(0755,root,root) %dir %{_localstatedir}/log/nginx
 %attr(0755,root,root) %{_libdir}/nginx/modules/*.so
 
-
 %dir %{_datadir}/doc/%{name}-%{main_version}
 %doc %{_datadir}/doc/%{name}-%{main_version}/COPYRIGHT
 %{_mandir}/man8/nginx.8*
@@ -336,6 +330,50 @@ if [ $1 -ge 1 ]; then
 fi
 
 %changelog
+
+* Tue Apr 17 2018 Konstantin Pavlov <thresh@nginx.com>
+- 1.14.0
+
+* Mon Apr 09 2018 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.12
+
+* Tue Apr 03 2018 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.11
+
+* Tue Mar 20 2018 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.10
+
+* Tue Feb 20 2018 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.9
+
+* Tue Dec 26 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.8
+
+* Tue Nov 21 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.7
+
+* Tue Oct 10 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.6
+
+* Tue Sep  5 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.5
+
+* Tue Aug  8 2017 Sergey Budnevitch <sb@nginx.com>
+- 1.13.4
+
+* Tue Jul 11 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.3
+- Fixes CVE-2017-7529
+
+* Tue Jun 27 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.2
+
+* Tue May 30 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.1
+
+* Tue Apr 25 2017 Konstantin Pavlov <thresh@nginx.com>
+- 1.13.0
+
 * Tue Oct 17 2017 Konstantin Pavlov <thresh@nginx.com>
 - 1.12.2
 
